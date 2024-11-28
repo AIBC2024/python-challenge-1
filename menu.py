@@ -1,4 +1,6 @@
+#################
 # Menu dictionary
+#################
 menu = {
     "Snacks": {
         "Cookie": .99,
@@ -50,8 +52,201 @@ menu = {
     }
 }
 
+##########################################################
+# Print menu dictionary
+# First create the print_menu_items function then print it
+##########################################################
+def print_menu_items():
+    for category in menu:
+        print(f"\n{category}:")
+        for item, price in menu[category].items():
+            if isinstance(price, dict):
+                # Handle nested items (like Pizza, Burger, Drinks)
+                print(f"  {item}:")
+                for variant, variant_price in price.items():
+                    print(f"    - {variant}: ${variant_price:.2f}")
+            else:
+                # Handle simple items
+                print(f"  - {item}: ${price:.2f}")
+
+# Call the print_menu_items function to print the menu
+
+print("Welcome to the variety food truck. Here are our offerings:")
+print(" ")
+print_menu_items()
+
+########################################################################
 # 1. Set up order list. Order list will store a list of dictionaries for
 # menu item name, item price, and quantity ordered
+# code snippet helper from Chat GPT modified heavily to learn and add my own variations
+########################################################################
+
+# Initialize the order list
+order_list = []
+
+# Helper function to find the price of an item (handling nested dictionaries)
+def find_price(menu, item_name):
+    for key, value in menu.items():
+        if isinstance(value, dict):
+            # Recursively search in nested dictionaries
+            result = find_price(value, item_name)
+            if result is not None:
+                return result
+        elif key == item_name:
+            return value
+    return None
+
+
+
+#####################################################
+# 2. Create a function to add items to the order list
+# def add_to_order(item_name, quantity):
+#####################################################
+
+def add_to_order(item_name, quantity):
+    price = find_price(menu, item_name)
+    if price is not None:
+        order_list.append({
+            "item_name": item_name,
+            "item_price": price,
+            "quantity": quantity
+        })
+        print(f"Added {quantity} x {item_name} to the order list.")
+    else:
+        print(f"Item '{item_name}' not found in the menu.")
+
+
+
+
+print(" ") ## do this to insert an empty line
+
+"""
+########################################
+# Just for Ingrid's learning
+# prompt to show what the customer order
+########################################
+
+def menu_selection(menu):
+    print("Menu Categories:")
+    categories = list(menu.keys())
+    for idx, category in enumerate(categories, start=1):
+        print(f"{idx}. {category}")
+    
+    # Prompt for category selection
+    while True:
+        try:
+            total_categories = len(categories)
+            category_choice = int(input(f"\nSelect a category by number from 1 to {total_categories}: ")) - 1
+            if 0 <= category_choice < len(categories):
+                selected_category = categories[category_choice]
+                break
+            else:
+                print("Invalid choice. Please select a valid menu category number.")
+        except ValueError:
+            print("Invalid input. Please enter a number from provided menu categories.") ## this is for the main menu category
+
+    # Display items in the selected category
+    items = menu[selected_category]
+    print(f"\nItems in {selected_category}:")
+    if isinstance(items, dict):
+        for idx, (item, value) in enumerate(items.items(), start=1):
+            if isinstance(value, dict):
+                print(f"{idx}. {item} (sub-options available)")
+            else:
+                print(f"{idx}. {item} - ${value:.2f}")
+
+        # Prompt for item selection
+        while True:
+            try:
+                total_items = len(items)
+                item_choice = int(input(f"\nSelect a category item by number from 1 to {total_items}: ")) - 1
+                item_names = list(items.keys())
+                if 0 <= item_choice < len(item_names):
+                    selected_item = item_names[item_choice]
+                    sub_items = items[selected_item]
+                    if isinstance(sub_items, dict):
+                        print(f"\nSub-options for {selected_item}:")
+                        for idx, (sub_item, price) in enumerate(sub_items.items(), start=1):
+                            print(f"{idx}. {sub_item} - ${price:.2f}")
+                        # Prompt for sub-option
+                        while True:
+                            try:
+                                sub_choice = int(input("\nSelect a sub-option by number: ")) - 1
+                                sub_item_names = list(sub_items.keys())
+                                if 0 <= sub_choice < len(sub_item_names):
+                                    final_selection = f"{selected_item} ({sub_item_names[sub_choice]})"
+                                    return final_selection
+                                else:
+                                    print("Invalid sub-option selection. Please select a valid sub-option number.")
+                            except ValueError:
+                                print("Invalid input entry. Please enter a number.") ## this is for the category menu item
+                    else:
+                        return selected_item
+                else:
+                    print("Invalid choice selection. Please select a valid item number.")
+            except ValueError:
+                print("Invalid input entry. Please enter a number.")
+    else:
+        print(f"Error: {selected_category} does not contain valid items.")
+
+# Example usage
+menu_selection = menu_selection(menu)
+print(f"\nYou selected: {menu_selection}")
+"""
+
+
+
+"""
+    Add an item to the order list
+    
+    Parameters:
+        item_name (str): Name of the menu item
+        quantity (int): Quantity ordered
+    
+    # Look up the price in the menu dictionary
+    price = None
+    
+    # Search through each category in the menu
+    for category in menu:
+        if item_name in menu[category]:
+            # If item is found and has a direct price
+            if isinstance(menu[category][item_name], (int, float)):
+                price = menu[category][item_name]
+                break
+        else:
+            # Check nested items (like Pizza, Burger, Drinks)
+            for nested_item in menu[category]:
+                if isinstance(menu[category][nested_item], dict):
+                    if item_name in menu[category][nested_item]:
+                        price = menu[category][nested_item][item_name]
+                        break
+    
+    if price is not None:
+        # Create the order dictionary
+        order_item = {
+            "item_name": item_name,
+            "price": price,
+            "quantity": quantity
+        }
+        # Add the order to the list
+        order_list.append(order_item)
+        print(f"Added {quantity} x {item_name} at ${price:.2f} each")
+    else:
+        print(f"Error: {item_name} not found in menu")
+
+# Example usage:
+# Add some items to the order list
+add_to_order("Cookie", 2)
+add_to_order("Banana", 1)
+
+# Print the current order list
+print("\nCurrent Order List:")
+for item in order_list:
+    print(f"Item: {item['item_name']}")
+    print(f"Price: ${item['price']:.2f}")
+    print(f"Quantity: {item['quantity']}")
+    print(f"Subtotal: ${item['price'] * item['quantity']:.2f}")
+    print("-" * 30)
 
 
 # Launch the store and present a greeting to the customer
@@ -172,6 +367,12 @@ while place_order:
                 # Tell the customer to try again
 
 
+                
+
+"""
+
+
+"""
 # Print out the customer's order
 print("This is what we are preparing for you.\n")
 
@@ -198,3 +399,121 @@ print("--------------------------|--------|----------")
 # 11. Calculate the cost of the order using list comprehension
 # Multiply the price by quantity for each item in the order list, then sum()
 # and print the prices.
+"""
+
+def menu_selection(menu):
+    print("Menu Categories:")
+    categories = list(menu.keys())
+    for idx, category in enumerate(categories, start=1):
+        print(f"{idx}. {category}")
+    
+    # Prompt for category selection
+    while True:
+        try:
+            total_categories = len(categories)
+            category_choice = int(input(f"\nSelect a category by number from 1 to {total_categories}: ")) - 1
+            if 0 <= category_choice < len(categories):
+                selected_category = categories[category_choice]
+                break
+            else:
+                print("Invalid choice. Please select a valid menu category number.")
+        except ValueError:
+            print("Invalid input. Please enter a number from the provided menu categories.")
+
+    # Display items in the selected category
+    items = menu[selected_category]
+    print(f"\nItems in {selected_category}:")
+    if isinstance(items, dict):
+        for idx, (item, value) in enumerate(items.items(), start=1):
+            if isinstance(value, dict):
+                print(f"{idx}. {item} (sub-options available)")
+            else:
+                print(f"{idx}. {item} - ${value:.2f}")
+
+        # Prompt for item selection
+        while True:
+            try:
+                total_items = len(items)
+                item_choice = int(input(f"\nSelect a category item by number from 1 to {total_items}: ")) - 1
+                item_names = list(items.keys())
+                if 0 <= item_choice < len(item_names):
+                    selected_item = item_names[item_choice]
+                    sub_items = items[selected_item]
+                    if isinstance(sub_items, dict):
+                        print(f"\nSub-options for {selected_item}:")
+                        for idx, (sub_item, price) in enumerate(sub_items.items(), start=1):
+                            print(f"{idx}. {sub_item} - ${price:.2f}")
+                        # Prompt for sub-option
+                        while True:
+                            try:
+                                sub_choice = int(input("\nSelect a sub-option by number: ")) - 1
+                                sub_item_names = list(sub_items.keys())
+                                if 0 <= sub_choice < len(sub_item_names):
+                                    final_selection = f"{selected_item} ({sub_item_names[sub_choice]})"
+                                    final_price = sub_items[sub_item_names[sub_choice]]
+                                    break
+                                else:
+                                    print("Invalid sub-option selection. Please select a valid sub-option number.")
+                            except ValueError:
+                                print("Invalid input entry. Please enter a number.")
+                        break
+                    else:
+                        final_selection = selected_item
+                        final_price = sub_items
+                        break
+                else:
+                    print("Invalid choice selection. Please select a valid item number.")
+            except ValueError:
+                print("Invalid input entry. Please enter a number.")
+        # Prompt for quantity
+        while True:
+            try:
+                quantity = input(f"\nEnter quantity for {final_selection} (default is 1): ")
+                if not quantity.strip():
+                    quantity = 1
+                else:
+                    quantity = int(quantity)
+                if quantity > 0:
+                    break
+                else:
+                    print("Quantity must be a positive number.")
+            except ValueError:
+                print("Invalid input. Please enter a valid number.")
+
+        # Append to order list
+        order_list.append({
+            "item_name": final_selection,
+            "item_price": final_price,
+            "quantity": quantity
+        })
+        print(f"\nAdded {quantity} x {final_selection} (${final_price:.2f} each) to the order list.")
+    else:
+        print(f"Error: {selected_category} does not contain valid items.")
+
+# Continuation with match-case
+while True:
+    menu_selection(menu)
+    while True:
+        keep_ordering = input("\nWould you like to keep ordering? (y/n): ").strip().lower()
+        match keep_ordering:
+            case "y":
+                print("\nLet's add more items!")
+                break
+            case "n":
+                print("\nThank you for your order! This is what we are preparing for you: \n")
+                print("Item name                      | Price  | Quantity  | Total Price ")
+                print("-------------------------------|--------|---------- |-------------")
+                total_cost = 0 # To calculate the total cost of the order
+                for order in order_list:
+                    item_name = order['item_name'].ljust(30)  # Left align the item name
+                    price = f"${order['item_price']:.2f}".rjust(7)  # Right align the price
+                    quantity = str(order['quantity']).rjust(8)  # Right align the quantity
+                    total_price = order['item_price'] * order['quantity']  # Calculate total price per item
+                    total_cost += total_price  # Add to total cost
+                    total_price_str = f"${total_price:.2f}".rjust(11)  # Format total price
+                    print(f"{item_name}| {price} | {quantity}  | {total_price_str}")
+                print("--------------------------|--------|----------|-------------")
+                print(f"Your total order cost: ${total_cost:.2f}\n")
+                exit()
+            case _:
+                print("Invalid input. Please enter 'y' or 'n'.")
