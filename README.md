@@ -1,14 +1,22 @@
 # python-challenge-1
-Python Challenge 1 AI Bootcamp due 12/3/2024
+Python Challenge 1 AI Bootcamp due 12/10/2024
 
 ## Overview
 1. Create a food truck ordering system where customer can order different kinds of food and/or drinks
-2. If the data entry is not in the right format (ie not as an integer) then the program will prompt an error message asking for the right input
+2. If the data entry is not in the right format (ie. not as an integer) then the program will prompt an error message asking for the right input
 3. Customer can continue ordering as much as they want
 4. The quantity of ordering is default to 1 if no number is entered
 5. Behind the scene, the customer order if being stored until they complete ordering things
 6. Once they finish with the order they will see the total cost per each menu category PLUS the total order cost of everything
 7. In this exercise we want to make sure calculations are done correctly and each warning makes sense
+
+## How I did my work
+1. Downloaded the homework starter file
+2. Created pseudo code by outlining what needs to be done
+3. Received help from ChatGPT and Claude.AI, modified things that needed to be done to comply with instructions
+4. Debug and test multiple times
+5. Connected with a tutor to get some guidance on process of thought
+6. Total hours spent to finalize the code to ensure accuracy and meeting the goal is approx 20 hours
 
 ## Output Examples, copy paste from the terminal after the program was run
 
